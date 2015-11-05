@@ -1,3 +1,4 @@
+#pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
 #pragma config(Motor,  port1,           backLeft,      tmotorVex393_HBridge, openLoop, driveLeft)
 #pragma config(Motor,  port2,           frontLeft,     tmotorVex393_MC29, openLoop, driveLeft)
 #pragma config(Motor,  port3,           flip1,         tmotorVex393_MC29, openLoop)
@@ -13,8 +14,8 @@
 
 //Competition Control and Duration Settings
 #pragma competitionControl(Competition)
-#pragma autonomousDuration(20)
-#pragma userControlDuration(120)
+#pragma autonomousDuration(15)
+#pragma userControlDuration(105)
 
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 
@@ -69,8 +70,13 @@ task usercontrol()
 	// User control code here, inside the loop
 
 	int foo;
+	int potThreshold = 800;
+	int flipperVal = 0;
 	//clearDebugStream;
 	//ClearTimer(T1);
+
+	wait1Msec(2000);                // wait 2 seconds before exectuing following code
+  bMotorReflected[port2] = true;
 
 	while (true)
 	{
@@ -85,13 +91,32 @@ task usercontrol()
 		int ch3 = vexRT[Ch3];
 		int secondch2 = vexRT[Ch2Xmtr2];
 		int secondch3 = vexRT[Ch3Xmtr2];
+		int pot = SensorValue[potentiometer];
 
 		//motor[motor1] = motor[motor2] = motor[motor3] = motor[motor10] = ch2;
 // Flipper on Controller 2
-		motor[flip1] = secondch2;
+		/*motor[flip1] = secondch2;
 		motor[flip2] = secondch2;
 		motor[flip3] = secondch2;
-		motor[flip4] = secondch2;
+		motor[flip4] = secondch2;*/
+
+		//Flipper button control
+
+		motor[flip1] = flipperVal;
+		motor[flip2] = flipperVal;
+		motor[flip3] = flipperVal;
+		motor[flip4] = flipperVal;
+		// arbitrary value for pot
+		if(vexRT[Btn8DXmtr2] && pot < potThreshold) {
+			flipperVal = -127;
+		} else if (pot > potThreshold) {
+			flipperVal = -20;
+	} else if (vexRT[Btn8UXmtr2]) {
+		flipperVal = 127;
+	} else {
+		flipperVal = 0;
+	}
+
 // Drive On Controller 1
 		motor[backLeft] = ch3;
 		motor[frontLeft] = ch3;
@@ -107,12 +132,21 @@ task usercontrol()
 			motor[intake] = 0;
 		}
 
-	/*	int pot = SensorValue[potentiometer];
+		//int pot = SensorValue[potentiometer];
 		//sfoo = time100[T1]/10;
 		writeDebugStreamLine("The potentiometer is reading %d", SensorValue[potentiometer]);
 		//int shoot vexRT[Btn8D];
 
-		*/
+		clearLCDLine(0);                                  // clear the top VEX LCD line
+    clearLCDLine(1);                                  // clear the bottom VEX LCD line
+
+    setLCDPosition(0,0);                              // set the VEX LCD cursor the first line, first space
+    displayNextLCDString("Potentiometer:");           // display "Potentiometer:" on the top line
+
+    setLCDPosition(1,0);                              // set the VEX LCD cursor the second line, first space
+    displayNextLCDNumber(SensorValue(potentiometer));
+
+
 
 
 
