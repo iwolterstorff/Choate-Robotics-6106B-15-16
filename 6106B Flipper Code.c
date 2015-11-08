@@ -5,6 +5,7 @@
 #pragma config(Motor,  port4,           flip2,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           flip3,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port6,           flip4,         tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port7,           servo,         tmotorServoStandard, openLoop)
 #pragma config(Motor,  port8,           intake,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           frontRight,    tmotorVex393_MC29, openLoop, reversed, driveRight)
 #pragma config(Motor,  port10,          backRight,     tmotorVex393_HBridge, openLoop, reversed, driveRight)
@@ -69,8 +70,7 @@ task usercontrol()
 {
 	// User control code here, inside the loop
 
-	int foo;
-	int potThreshold = 800;
+	int potThreshold = 1616;
 	int flipperVal = 0;
 	//clearDebugStream;
 	//ClearTimer(T1);
@@ -101,21 +101,44 @@ task usercontrol()
 		motor[flip4] = secondch2;*/
 
 		//Flipper button control
+		if(vexRT[Btn6UXmtr2])
+		{
+			motor[servo] = -127;
+		}
+		if(vexRT(Btn6DXmtr2))
+		{
+			motor[servo] = 127;
+		}
+
 
 		motor[flip1] = flipperVal;
 		motor[flip2] = flipperVal;
 		motor[flip3] = flipperVal;
 		motor[flip4] = flipperVal;
-		// arbitrary value for pot
+
+
 		if(vexRT[Btn8DXmtr2] && pot < potThreshold) {
 			flipperVal = -127;
-		} else if (pot > potThreshold) {
-			flipperVal = -20;
-	} else if (vexRT[Btn8UXmtr2]) {
+		} else if (vexRT[Btn8UXmtr2]) {
 		flipperVal = 127;
-	} else {
+	}else if (pot > potThreshold) {
+			flipperVal = -20;
+	}  else {
 		flipperVal = 0;
 	}
+
+	// doesn't work yet
+
+	/*if(vexRT[Btn8DXmtr2] && pot < potThreshold) {
+			flipperVal = -127;
+		} else if (vexRT[Btn8DXmtr2] && pot > potThreshold) {
+			flipperVal = -20;
+		} else if (pot > potThreshold && !vexRT[Btn8DXmtr2]) {
+			if (pot > 750) {
+				flipperVal = 127;
+			} else {
+			flipperVal = 0;
+		}}*/
 
 // Drive On Controller 1
 		motor[backLeft] = ch3;
@@ -131,6 +154,18 @@ task usercontrol()
 		{
 			motor[intake] = 0;
 		}
+		if(vexRT[Btn5U]) {
+			motor[backLeft] = 127;
+			motor[frontLeft] = -127;
+			motor[backRight] = -127;
+			motor[frontRight] = 127;
+	}
+	if(vexRT[Btn6U]) {
+		motor[backLeft] = -127;
+		motor[frontLeft] = 127;
+		motor[backRight] = 127;
+		motor[frontRight] = -127;
+	}
 
 		//int pot = SensorValue[potentiometer];
 		//sfoo = time100[T1]/10;
