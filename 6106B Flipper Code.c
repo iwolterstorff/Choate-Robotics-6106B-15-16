@@ -103,13 +103,10 @@ task usercontrol()
 		//Flipper button control
 		if(vexRT[Btn6UXmtr2])
 		{
-			motor[servo] = -127;
+			motor[servo] = -95;
+			wait1Msec(500);
+      motor[servo] = 95;
 		}
-		if(vexRT(Btn6DXmtr2))
-		{
-			motor[servo] = 127;
-		}
-
 
 		motor[flip1] = flipperVal;
 		motor[flip2] = flipperVal;
