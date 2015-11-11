@@ -1,4 +1,6 @@
 #pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
+#pragma config(Sensor, in2,    linetrack,      sensorLineFollower)
+#pragma config(Sensor, in3,    linetrack2,     sensorLineFollower)
 #pragma config(Motor,  port1,           backLeft,      tmotorVex393_HBridge, openLoop, driveLeft)
 #pragma config(Motor,  port2,           frontLeft,     tmotorVex393_MC29, openLoop, driveLeft)
 #pragma config(Motor,  port3,           flip1,         tmotorVex393_MC29, openLoop)
@@ -54,7 +56,6 @@ task autonomous()
 	// Insert user code here.
 	// .....................................................................................
 
-	AutonomousCodePlaceholderForTesting();  // Remove this function call once you have "real" code.
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +104,7 @@ task usercontrol()
 		//Flipper button control
 		if(vexRT[Btn6UXmtr2])
 		{
-			motor[servo] = -95;
+			motor[servo] = -125;
 			wait1Msec(500);
       motor[servo] = 95;
 		}
